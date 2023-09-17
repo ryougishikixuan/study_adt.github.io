@@ -34,15 +34,15 @@ void fill(T (&arr)[N],T &value)
 }
 
 //≤‚ ‘
-int main(){
-    char a[4]{'a','b','c','d'};
-    char value{'s'};
-    fill(a,value);
-    for(int i=0;i<4;i++)
-    {
-        std::cout<<a[i]<<" ";
-    }
-}
+// int main(){
+//     char a[4]{'a','b','c','d'};
+//     char value{'s'};
+//     fill(a,value);
+//     for(int i=0;i<4;i++)
+//     {
+//         std::cout<<a[i]<<" ";
+//     }
+// }
 // ‰≥ˆ–≈œ¢
 //s s s s
 
