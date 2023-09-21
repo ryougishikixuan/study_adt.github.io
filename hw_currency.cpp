@@ -1,12 +1,12 @@
 #include <iostream>
-using namespace std;
+#include"hw_currency.h"
 
-enum signType { plus, minus };
 
-class currency {
-public:
+
+
 //构造函数
-     currency(signType theSign = signType::plus, unsigned long theDollars = 0, unsigned int theCents = 0) {
+
+     currency::currency(signType theSign, unsigned long theDollars , unsigned int theCents ) {
         // 计算总金额并存储到 amount 中
         long newAmount = static_cast<long>(theDollars) * 100 + theCents;
 
@@ -17,10 +17,14 @@ public:
 
         amount = newAmount;
     }
-//析构函数
-    ~currency() = default;
+//拷贝构造函数
+    currency::currency(const currency& other) {
+    this->amount = other.amount;
+}
 
-    void setValue(signType theSign, unsigned long theDollars, unsigned int theCents) {
+
+
+    void currency::setValue(signType theSign, unsigned long theDollars, unsigned int theCents) {
     
     long newAmount = static_cast<long>(theDollars) * 100 + theCents;
 
@@ -32,7 +36,7 @@ public:
     amount = newAmount;
 }
 
-    void setValue(double value) {
+    void currency::setValue(double value) {
     
     long newAmount = static_cast<long>(value * 100);
 
@@ -48,43 +52,39 @@ public:
     amount = newAmount;
 }
 
-    signType getSign() const {
+    signType currency::getSign() const {
         if (amount < 0) return signType::minus;
         else return signType::plus;
     
     }
-    unsigned long getDollars() const {
+    unsigned long currency::getDollars() const {
         if (amount < 0) return (-amount) / 100;
         else return amount / 100;
     }
-    unsigned int getCents() const {
+    unsigned int currency::getCents() const {
         if (amount < 0) return -amount - getDollars() * 100;
         else return amount - getDollars() * 100;
     }
 
-    currency operator+(const currency&) const;
-    currency operator+=(const currency& x) {
+    
+    currency currency::operator+=(const currency& x) {
         amount += x.amount;
         return *this;
     }
 
-//>>运算符重载的友元函数
-    friend istream& operator>>(istream& in, currency& cur);
 
-// 重载-  % * 和 / 运算符
 
-    currency operator%(const currency& x) const;
-    currency operator*(const currency& x) const;
-    currency operator/(const currency& x) const;
-    currency operator-(const currency& x) const;
-    currency operator-=(const currency& x){
+
+
+    
+    currency currency::operator-=(const currency& x){
          amount -= x.amount;
         return *this;
     };
-    void output(ostream&) const;
+    
 
 //重载=运算符
-    currency& operator=(int x) {
+    currency& currency::operator=(int x) {
         
         signType newSign = (x < 0) ? signType::minus : signType::plus;
         unsigned long newDollars = (x < 0) ? (-x) / 100 : x / 100;
@@ -95,7 +95,7 @@ public:
     }
 
 // 重载 = 运算符，double x 作为参数
-    currency& operator=(double x) {
+    currency& currency::operator=(double x) {
         
         long amountInCents = static_cast<long>(x * 100);
 
@@ -107,9 +107,7 @@ public:
         return *this;
     }    
 
-private:
-    long amount;
-};
+
 
 //定义>>运算符
 istream& operator>>(istream& in, currency& cur) {
@@ -163,51 +161,10 @@ currency currency::operator+(const currency& x) const {
 }
 
 // 定义输出函数
-void currency::output(ostream& out=cout) const {
+void currency::output(ostream& out) const {
     if (getSign() == signType::minus) {
         out << '-';
     }
     out << "$" << getDollars() << "." << getCents();
 }
 
-int main() {
-    currency cur1, cur2, cur3;
-    cout << "请输入第一个货币金额（格式：+ 100 50）：";
-    cin >> cur1;
-    
-    cout << "请输入第二个货币金额（格式：- 75 25）：";
-    cin >> cur2;
-
-    cur3 = cur1 + cur2;
-    cout << "和为：";
-    cur3.output();
-    cout << endl;
-
-    cur3 = cur1 % cur2;
-    cout << "取余为：";
-    cur3.output();
-    cout << endl;
-
-    cur3 = cur1 * cur2;
-    cout << "乘积为：";
-    cur3.output();
-    cout <<endl;
-
-    cur3 = cur1 / cur2;
-    cout << "除法结果为：";
-    cur3.output();
-    cout << endl;
-
-    cur3 = cur1 -cur2;
-    cout << "减法结果为：";
-    cur3.output();
-    cout << endl;
-
-    currency cur;
-    cur = 12345;        
-    cur.output();
-    cur = 123.45;       
-    cur.output();
-
-    return 0;
-}
