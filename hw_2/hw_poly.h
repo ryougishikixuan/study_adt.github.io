@@ -115,9 +115,7 @@ class doubleLinkList{
             append(newval);
         }
     }
-    
-
-    
+     
     Node<T>* head;
     Node<T>* tail;
 };
@@ -213,6 +211,106 @@ class polys{
 
         cout << endl;
     }
+    //4.多项式相加
+    //两个多项式相加产生一个新的结果多项式
+    //需要按值匹配相应的exponent,如果没有匹配就直接将这个节点加入结果多项式,如果匹配成功就coefficient进行相加,再把结果加入结果多项式
+    polys* puls(const polys &p1) {
+    polys* result = new polys(); // 创建结果多项式对象
+
+    Node<pair<int, int>>* currentThis = poly->head;
+    Node<pair<int, int>>* currentP1 = p1.poly->head;
+
+    while (currentThis != nullptr || currentP1 != nullptr) {
+        int coefficientThis = 0;
+        int coefficientP1 = 0;
+        int exponent = 0;
+
+        // 获取当前节点的系数和指数
+        if (currentThis != nullptr) {
+            coefficientThis = currentThis->data.first;
+            exponent = currentThis->data.second;
+        }
+
+        if (currentP1 != nullptr) {
+            coefficientP1 = currentP1->data.first;
+            exponent = currentP1->data.second;
+        }
+
+        // 如果两个节点的指数相等，则将系数相加
+        if (currentThis != nullptr && currentP1 != nullptr && currentThis->data.second == currentP1->data.second) {
+            int sumCoefficient = coefficientThis + coefficientP1;
+            // 如果系数不为0，则将结果插入到结果多项式中
+            if (sumCoefficient != 0) {
+                result->poly->append(std::make_pair(sumCoefficient, exponent));
+            }
+            currentThis = currentThis->next;
+            currentP1 = currentP1->next;
+        } else if ((currentThis != nullptr && currentThis->data.second > currentP1->data.second) || currentP1 == nullptr) {
+            // 如果当前多项式的指数大于另一个多项式，或者另一个多项式已经结束，则将当前多项式的项插入结果中
+            result->poly->append(std::make_pair(coefficientThis, exponent));
+            currentThis = currentThis->next;
+        } else if ((currentThis != nullptr && currentThis->data.second < currentP1->data.second) || currentThis == nullptr) {
+            // 如果当前多项式的指数小于另一个多项式，或者当前多项式已经结束，则将另一个多项式的项插入结果中
+            result->poly->append(std::make_pair(coefficientP1, exponent));
+            currentP1 = currentP1->next;
+        }
+    }
+    cout<<"相加结果为:";
+    result->output();
+    cout<<endl;
+    return result;
+    }
+
+        // 多项式相减函数
+        polys* subtraction(const polys &p1) {
+        polys* result = new polys(); // 创建结果多项式对象
+
+        Node<pair<int, int>>* currentThis = poly->head;
+        Node<pair<int, int>>* currentP1 = p1.poly->head;
+
+        while (currentThis != nullptr || currentP1 != nullptr) {
+            int coefficientThis = 0;
+            int coefficientP1 = 0;
+            int exponentThis = 0;
+            int exponentP1 = 0;
+
+        // 获取当前节点的系数和指数
+        if (currentThis != nullptr) {
+            coefficientThis = currentThis->data.first;
+            exponentThis = currentThis->data.second;
+        }
+
+        if (currentP1 != nullptr) {
+            coefficientP1 = currentP1->data.first;
+            exponentP1 = currentP1->data.second;
+        }
+
+        // 比较当前项的指数
+        if (exponentThis == exponentP1) {
+            int diffCoefficient = coefficientThis - coefficientP1;
+            // 如果系数不为0，则将结果插入到结果多项式中
+            if (diffCoefficient != 0) {
+                result->poly->append(std::make_pair(diffCoefficient, exponentThis));
+            }
+            currentThis = currentThis->next;
+            currentP1 = currentP1->next;
+        } else if (exponentThis > exponentP1 || currentP1 == nullptr) {
+            // 如果当前多项式的指数大于另一个多项式，或者另一个多项式已经结束，则将当前多项式的项插入结果中
+            result->poly->append(std::make_pair(coefficientThis, exponentThis));
+            currentThis = currentThis->next;
+        } else if (exponentThis < exponentP1 || currentThis == nullptr) {
+            // 如果当前多项式的指数小于另一个多项式，或者当前多项式已经结束，则将另一个多项式的项插入结果中
+            result->poly->append(std::make_pair(-coefficientP1, exponentP1));
+            currentP1 = currentP1->next;
+        }
+        }
+
+        cout << "相减结果为:";
+        result->output();
+        cout << endl;
+        return result;
+    }
+
 
     private:
     doubleLinkList<pair<int,int>>* poly;
